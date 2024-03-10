@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: db
+    image: postgres:16
+    hostname: $POSTGRES_HOST
+    ports:
+      - $POSTGRES_LOCAL_PORT:$POSTGRES_PORT
+    env_file:
+      - ./.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - network
+    restart: always
+
+  backend:
+    container_name: backend
+    build: .
+    hostname: backend
+    ports:
+      - $SERVER_LOCAL_PORT:$SERVER_PORT
+    env_file: ./.env
+    networks:
+      - network
+    restart: always
+    depends_on:
+      - db
+
+
+networks:
+  network:
+
+volumes:
+  postgres_data:
